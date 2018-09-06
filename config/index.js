@@ -1,11 +1,11 @@
 class QueueConfiguration {
-    constructor(config)  {
+    constructor(config) {
         this._size = config.size;
     }
-    getSize(){
+    getSize() {
         return this._size;
     }
-    setSize(size){
+    setSize(size) {
         this._size = size;
     }
 }
@@ -15,10 +15,10 @@ class ConsumerConfiguration {
         this._dependency = config.dependency
         this._name = config.name
     }
-    getConfiguration(){
+    getConfiguration() {
         return {
-            dependency:this._dependency,
-            name:this._name
+            dependency: this._dependency,
+            name: this._name
         }
     }
 }
@@ -29,7 +29,7 @@ class ProducerConfiguration {
         // this._dependency = config.dependency
         // this._name = config.name
     }
-    getConfiguration(){
+    getConfiguration() {
         return this._config
         // return {
         //     dependency:this._dependency,
@@ -42,7 +42,7 @@ class Dependency {
     constructor(dependency) {
         this._dependencyGraph = dependency.graph
     }
-    getDependencyGraph(){
+    getDependencyGraph() {
         return this._dependencyGraph
     }
 }
