@@ -1,4 +1,4 @@
-let { InvalidClassError,EmptyQueue, FullQueue, EmptyConsumers } = require('../exceptions')
+let { InvalidClassError,EmptyQueue, FullQueue, EmptyConsumers } = require('../error')
 let { Message } = require('./message')
 let { QueueConfiguration } = require('../config')
 const { generateShortId } = require('../utils')
@@ -21,16 +21,16 @@ class Queue {
     getQueueId() {
         return this._id;
     }
-    deQueue() {
+    deQueue(consumer,callback) {
         if(_.isEmpty(this._queue)) {
-            throw new EmptyQueue('Empty Queue Cannot DeQueue')
+            callback(new EmptyQueue(`Empty Queue Cannot DeQueue Consumer : ${consumer}`))
         }
         // if(_.isEmpty(this._consumers)) {
         //     throw new EmptyConsumers('Please add consumers to Dequeue')
         // }
         let data = this._queue.pop()
         eventEmitter.emit('deQueue',data)
-        return data
+        callback(null,data)
     }
     getConfiguration(){
         return this._configuration

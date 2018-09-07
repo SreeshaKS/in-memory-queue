@@ -1,6 +1,9 @@
 const { generateShortId } = require('../utils');
+let { InvalidClassError,EmptyQueue, FullQueue, EmptyConsumers } = require('../error')
 let eventEmitter = require('../utils').SingletonEventEmitter.getEventEmitter()
 let _ = require('lodash');
+let Context = require('./context')()
+let async = require('async')
 
 class Consumer {
     constructor(event, consumerConfiguration, handler) {
@@ -13,10 +16,8 @@ class Consumer {
             return [
                 `${e/*_id*/}`,
                 (data) => {
-                    delete this._config.dependency.processAfter[data._id]                    
-                    if(_.isEmpty(this._config.dependency.processAfter)) {
-                        this.consumeMessage(data.message)
-                    }
+                    delete this._config.dependency.processAfter[data._id]
+                    this.consumeMessage(data.message)
                 }
             ]
         }).forEach((e,i)=>{
@@ -26,9 +27,17 @@ class Consumer {
     }
     consumeMessage(message) {
         if(_.isEmpty(this._config.dependency.processAfter)) {
-            console.log(message);
-            eventEmitter.emit(this._id, { _id: this._id, message: message })
-            this._handler(message)
+            async.forever(
+                (next) => {
+                    Context.getQueue().deQueue(this,
+                    (err,data) => {
+                        if(err instanceof EmptyQueue) next()
+                        console.log(message,data);
+                        eventEmitter.emit(this._id, { _id: this._id, message: message })
+                        this._handler(data)
+                    })
+                },(err)=>{console.log(this._id,err)}
+            )
         }
     }
     getEvent() {

@@ -34,9 +34,19 @@ class EmptyConsumers extends Error {
     }
 }
 
+class NullContext extends Error {
+    constructor(message) {
+        this._message = message
+    }
+    toString() {
+        return this._message;
+    }
+}
+
 module.exports = {
     InvalidClassError,
     FullQueue,
     EmptyQueue,
-    EmptyConsumers
+    EmptyConsumers,
+    NullContext
 }
