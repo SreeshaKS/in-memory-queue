@@ -30,12 +30,12 @@ class Consumer {
             async.forever(
                 (next) => {
                     Context.getQueue().deQueue(this,
-                    (err,data) => {
-                        if(err instanceof EmptyQueue) next()
-                        console.log(message,data);
-                        eventEmitter.emit(this._id, { _id: this._id, message: message })
-                        this._handler(data)
-                    })
+                        (err,data) => {
+                            if(err instanceof EmptyQueue) next()
+                            console.log(message,data);
+                            eventEmitter.emit(this._id, { _id: this._id, message: message })
+                            this._handler(data)
+                        })
                 },(err)=>{console.log(this._id,err)}
             )
         }

@@ -1,3 +1,4 @@
+let { InvalidClassError,EmptyQueue, FullQueue, EmptyConsumers,NullContext } = require('../error')
 let context = null
 let _ = require('lodash');
 
@@ -6,6 +7,7 @@ class Context {
         this._queue = queue
         this._consumers = []
         this._producers = []
+        this._semaphore = null;
     }
     getQueue() {
         if(_.isEmpty(context)) throw new NullContext('Please initialize app context');
