@@ -12,6 +12,7 @@ class QueueConfiguration {
 
 class ConsumerConfiguration {
     constructor(config) {
+        // {processAfter:[{_id:''}]}
         this._dependency = config.dependency
         this._name = config.name
     }

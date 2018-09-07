@@ -1,5 +1,7 @@
 const { generateShortId } = require('./shortId');
+const SingletonEventEmitter = require('./singletonemitter');
 
 module.exports = {
-    generateShortId
+    generateShortId,
+    SingletonEventEmitter : new SingletonEventEmitter()
 }

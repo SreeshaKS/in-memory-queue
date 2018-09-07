@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "in-memory-queue": "^1.0.3",
     "shortid": "^2.2.13"
   }
 }

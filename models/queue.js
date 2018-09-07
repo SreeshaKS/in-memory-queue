@@ -1,12 +1,20 @@
-let { InvalidClassError } = require('../exceptions');
+let { InvalidClassError,EmptyQueue, FullQueue, EmptyConsumers } = require('../exceptions')
 let { Message } = require('./message')
-const { generateShortId } = require('../utils');
+let { QueueConfiguration } = require('../config')
+const { generateShortId } = require('../utils')
+let eventEmitter = require('../utils').SingletonEventEmitter.getEventEmitter()
+let _ = require('lodash');
 
 class Queue {
-    costructor(queue) {
+    constructor(queue,queueConfiguration) {
         this._id = generateShortId();
         this._queue = queue || [];
+        this._configuration = queueConfiguration
+        //this._consumers = [];
     }
+    // addConsumer(consumer) {
+    //     this._consumers[consumer._id] = consumer;
+    // }
     getQueue() {
         return this._queue;
     }
@@ -14,13 +22,30 @@ class Queue {
         return this._id;
     }
     deQueue() {
-        return this._queue.pop()
+        if(_.isEmpty(this._queue)) {
+            throw new EmptyQueue('Empty Queue Cannot DeQueue')
+        }
+        // if(_.isEmpty(this._consumers)) {
+        //     throw new EmptyConsumers('Please add consumers to Dequeue')
+        // }
+        let data = this._queue.pop()
+        eventEmitter.emit('deQueue',data)
+        return data
+    }
+    getConfiguration(){
+        return this._configuration
     }
     enQueue(message) {
-        if (message instanceof Message)
+        if( this._queue.length == this._configuration.size ){
+            throw new FullQueue('Queue Full Cannot Add Elements')
+        }
+        if (message instanceof Message){
             this._queue.unshift(message)
-        else
+            eventEmitter.emit('enQueue',data)
+        }
+        else{
             throw new InvalidClassError('Only instances of Message are allowed')
+        }
     }
 }
 
