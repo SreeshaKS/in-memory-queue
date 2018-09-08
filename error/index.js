@@ -1,5 +1,6 @@
 class InvalidClassError extends Error {
     constructor(message) {
+        super(message)
         this._message = message
     }
     toString() {
@@ -9,6 +10,7 @@ class InvalidClassError extends Error {
 
 class EmptyQueue extends Error {
     constructor(message) {
+        super(message)
         this._message = message
     }
     toString() {
@@ -18,6 +20,7 @@ class EmptyQueue extends Error {
 
 class FullQueue extends Error {
     constructor(message) {
+        super(message)
         this._message = message
     }
     toString() {
@@ -27,6 +30,7 @@ class FullQueue extends Error {
 
 class EmptyConsumers extends Error {
     constructor(message) {
+        super(message)
         this._message = message
     }
     toString() {
@@ -36,6 +40,17 @@ class EmptyConsumers extends Error {
 
 class NullContext extends Error {
     constructor(message) {
+        super(message)
+        this._message = message
+    }
+    toString() {
+        return this._message;
+    }
+}
+
+class TypeError extends Error {
+    constructor(message) {
+        super(message)
         this._message = message
     }
     toString() {
@@ -48,5 +63,6 @@ module.exports = {
     FullQueue,
     EmptyQueue,
     EmptyConsumers,
-    NullContext
+    NullContext,
+    TypeError
 }

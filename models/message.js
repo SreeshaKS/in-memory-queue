@@ -1,16 +1,22 @@
 const { generateShortId } = require('../utils');
 
 class Message {
-    constructor(data) {
+    constructor(data,event) {
         this._id = generateShortId()
         this._data = data
+        this._event = event
     }
     identity() {
         return 'MessageObject'
     }
-    getMessage(){
+    getData(){
         return this._data = data
+    }
+    getEvent(){
+        return this._event
     }
 }
 
-module.exports = Message
+module.exports = {
+    Message
+}

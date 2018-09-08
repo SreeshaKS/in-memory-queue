@@ -2,6 +2,7 @@ module.exports = {
     Queue: require('./queue'),
     Producer: require('./producer'),
     Consumer: require('./consumer'),
-    Message: require('./message'),
-    Context: require('./context')
+    Message: require('./message').Message,
+    Context: require('./context')(),
+    Event: require('./event')
 }
