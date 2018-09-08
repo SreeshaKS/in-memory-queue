@@ -59,6 +59,7 @@ class ConsumerConfiguration {
     }
 }
 
+// Implmentation to be used later
 class ProducerConfiguration {
     constructor(config) {
         this._config = config
@@ -74,6 +75,7 @@ class ProducerConfiguration {
     }
 }
 
+// Implementation to be used later
 class Dependency {
     constructor(dependency) {
         this._dependencyGraph = dependency.graph
