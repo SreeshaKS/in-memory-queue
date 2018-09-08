@@ -14,7 +14,6 @@ class Producer {
         async.forever((next)=>{
             callForEvent((message)=>{
                 if(message instanceof Message) {
-                    console.log(Context.getQueue().getSize())
                     Context.getQueue().enQueue(message,(err,data)=>{
                         if(!err)
                             next()
@@ -36,6 +35,11 @@ class Producer {
     //         next(new TypeError('Object Not of type ' + Message))
     //     }
     // }
+    sendEvent(message,callback) {
+        Context.getQueue().enQueue(message,(err,data)=>{
+                callback(err,data)
+        })
+    }
     getEvent() {
         return this._event;
     }

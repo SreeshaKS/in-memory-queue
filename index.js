@@ -1,5 +1,5 @@
-var readlineSync = require('readline-sync')
 const readline = require('readline');
+
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -16,46 +16,46 @@ let { Queue, Consumer, Producer, Message, Context, Event } = require('./models')
 
 let queue = (new Queue([], new QueueConfiguration({ size: 10 }))).getQueue()
 
-let C = new Consumer(null,
+let A = new Consumer(null,
     new ConsumerConfiguration(
-        {   events: [new Event('test')],
+        {   events: [new Event('event')],
             dependency: 
             { 
                 processAfter: {} 
-        }, name: 'C' }),
-    (self,data,err) => {
+        }, name: 'A' }),
+    (self,message,err) => {
         if(err) {console.log(err);}
         else {
             //Re-Register Depedency
             // C.addDepenedency(A)
             // C.addDepenedency(B)
-            console.log(self._id,self.getName())
+            //console.log(self._id,self.getName(),message.getEvent().getName())
         }
     })
     
-let A = new Consumer(null,
+let C = new Consumer(null,
     new ConsumerConfiguration(
             {   
-                events: [new Event('test')],
+                events: [new Event('event')],
                 dependency: { 
                         processAfter: {
                            // [id1]: consumer1
                         }
-                    }, name: 'A' 
+                    }, name: 'C' 
             }
         ),
-    (self,data,err) => {
+    (self,message,err) => {
         if(err) {console.log(err);}
         else {
             //Re-Register Dependecy
             //A.addDepenedency(B)
-            console.log(self._id,self.getName())
+            //console.log(self._id,self.getName(),message.getEvent().getName())
         }
     })
 
     let B = new Consumer(null,
         new ConsumerConfiguration(
-                {   events: [new Event('test')],
+                {   events: [new Event('event')],
                     dependency: { 
                             processAfter: {
                                // [id1]: consumer1
@@ -63,10 +63,11 @@ let A = new Consumer(null,
                         }, name: 'B' 
                 }
             ),
-        (self,data,err) => {
+        (self,message,err) => {
             if(err) {console.log(err);}
-            else 
-                console.log(self._id,self.getName())
+            else {
+                //console.log(self._id,self.getName(),message.getEvent().getName())
+            }
         })
 
 /*  Deadlock      
@@ -74,23 +75,22 @@ let A = new Consumer(null,
         C.addDepenedency(B)
         A.addDepenedency(B)
         B.addDepenedency(A)
+        setTimeout(()=>{
+            B.removeDependency(A)
+        },2000)
 */
 
 /*  C-> (A,B)      
         C.addDepenedency(A)
         C.addDepenedency(B)
-        A.addDepenedency(B)
 */
 
       
-C.addDepenedency(A)
-C.addDepenedency(B)
-A.addDepenedency(B)
+// C.addDepenedency(A)
+// C.addDepenedency(B)
+// A.addDepenedency(B)
 
 //setTimeout(()=>{
-    C.startConsuming()
-    A.startConsuming()
-    B.startConsuming()
 //},500)
 // setTimeout(()=>{
 //     A.startConsuming()
@@ -107,44 +107,77 @@ let events = [
 
 let counter = 0;
 let producer = (new Producer())
-    .startEvents((sendEvent,error) => {
-        // rl.on('line', (answer) => {
-        //     if(answer!='N'){
-        //         sendEvent(
-        //             new Message(
-        //                 { 
-        //                     'data': 'This is an example message'+(++counter) 
-        //                 }
-        //                 ,new Event(answer)
-        //             )
-        //         )
-        //     }
-        // });
-        try {
-            setTimeout(()=>{
-                sendEvent(
-                    new Message(
-                        { 
-                            'data': 'This is an example message'+(++counter) 
-                        }
-                        ,new Event('test')
-                    )
-                )
+// producer.sendEvent(new Message(
+//                         { 
+//                             'data': 'This is an example message'+(++counter) 
+//                         }
+//                         ,new Event('event')
+//                     ),(e,d)=>{
+//                         // console.log(Context.getQueue())
+//                         // console.log(e,d)
+//                     })
+// producer.sendEvent(new Message(
+//     { 
+//         'data': 'This is an example message'+(++counter) 
+//     }
+//     ,new Event('event')
+// ),(e,d)=>{
+//     // console.log(Context.getQueue())
+//     // console.log(e,d)
+// })
+// producer.sendEvent(new Message(
+//     { 
+//         'data': 'This is an example message'+(++counter) 
+//     }
+//     ,new Event('event')
+// ),(e,d)=>{
+//     // console.log(Context.getQueue())
+//     // console.log(e,d)
+// })
 
-            },2000)
-        } catch(e) {
-            console.log(e)
-        }
-        // setTimeout(()=>{
-        //     sendEvent(
-        //         new Message(
-        //             { 
-        //                 'data': 'This is an example message'+(++counter) 
-        //             }
-        //             ,new Event(events[Math.floor(Math.random() * Math.floor(events.length-1))])
-        //         )
-        //     )
-        // },2000)
-    }, (err) => {
-        console.log(err)
-    })
+
+B.startConsuming()
+C.startConsuming()
+A.startConsuming()
+
+producer.startEvents((sendEvent,error) => {
+    // rl.on('line', (answer) => {
+    //     if(answer!='N'){
+    //         sendEvent(
+    //             new Message(
+    //                 { 
+    //                     'data': 'This is an example message'+(++counter) 
+    //                 }
+    //                 ,new Event(answer)
+    //             )
+    //         )
+    //     }
+    // });
+    try {
+        setTimeout(()=>{
+            sendEvent(
+                new Message(
+                    { 
+                        'data': 'This is an example message'+(++counter) 
+                    }
+                    ,new Event('test')
+                )
+            )
+
+        },500)
+    } catch(e) {
+        console.log(e)
+    }
+    // setTimeout(()=>{
+    //     sendEvent(
+    //         new Message(
+    //             { 
+    //                 'data': 'This is an example message'+(++counter) 
+    //             }
+    //             ,new Event(events[Math.floor(Math.random() * Math.floor(events.length-1))])
+    //         )
+    //     )
+    // },2000)
+}, (err) => {
+    console.log(err)
+})

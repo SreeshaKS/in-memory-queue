@@ -15,6 +15,9 @@ class Message {
     getEvent(){
         return this._event
     }
+    getId(){
+        return this._id;
+    }
 }
 
 module.exports = {
